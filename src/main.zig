@@ -220,7 +220,7 @@ const Die = struct {
         }
 
         // Dots of the die
-        w4.color(if (!d.h) 0x12 else 0x34);
+        w4.color(if (!d.h) 0x41 else 0x34);
 
         switch (d.n) {
             1 => {
