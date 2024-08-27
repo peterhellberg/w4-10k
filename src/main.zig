@@ -173,7 +173,7 @@ const Die = struct {
     r: Rect,
 
     fn startRoll(d: *Die) void {
-        d.l = 31;
+        d.l = 10 + @mod(random.int(u5), 21);
     }
 
     fn roll(d: *Die) void {
