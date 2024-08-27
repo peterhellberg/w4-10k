@@ -43,7 +43,6 @@ const Game = struct {
     button: w4.Button = .{},
 
     nextBtn: Rect = .{
-        .c = 0x21,
         .x = 130,
         .y = 148,
         .width = 20,
@@ -51,7 +50,6 @@ const Game = struct {
     },
 
     rollBtn: Rect = .{
-        .c = 0x34,
         .x = 96,
         .y = 125,
         .width = 58,
@@ -89,17 +87,19 @@ const Game = struct {
         if (self.button.released(0, w4.BUTTON_UP)) self.playerCount +|= 1;
         if (self.button.released(0, w4.BUTTON_DOWN) and self.playerCount > 1) self.playerCount -|= 1;
 
-        if (self.nextBtn.contains(&self.mouse)) {
-            if (self.mouse.released(w4.MOUSE_LEFT)) self.next();
-
-            self.nextBtn.c = 0x22;
-        }
-
         w4.color(0x13);
         w4.text("-==[ 10K GAME ]==-", 8, 20);
 
         w4.color(0x13);
         sany(10, 140, .{ "Player Count:", self.playerCount });
+
+        if (self.nextBtn.contains(&self.mouse)) {
+            if (self.mouse.released(w4.MOUSE_LEFT)) self.next();
+
+            w4.color(0x22);
+        } else {
+            w4.color(0x21);
+        }
 
         self.nextBtn.draw();
     }
@@ -129,6 +129,7 @@ const Game = struct {
         }
 
         if (held < 5) {
+            w4.color(0x34);
             self.rollBtn.draw();
             w4.color(0x41);
             sany(self.rollBtn.x + 4, self.rollBtn.y + 12, .{ "ROLL ", 5 - held });
@@ -143,10 +144,10 @@ const Game = struct {
 
         if (self.nextBtn.contains(&self.mouse)) {
             if (self.mouse.released(w4.MOUSE_LEFT)) self.next();
-
-            self.nextBtn.c = 0x22;
+            w4.color(0x22);
+        } else {
+            w4.color(0x32);
         }
-
         self.nextBtn.draw();
     }
 
@@ -195,8 +196,10 @@ const Die = struct {
 
     fn draw(d: *Die) void {
         const dot = w4.circle;
-        const s = 3;
+        const s = 4;
         const r = d.r;
+
+        w4.color(if (!d.h) 0x43 else 0x32);
 
         // Draw the rectangle itself
         r.draw();
@@ -208,13 +211,13 @@ const Die = struct {
         w4.pixel(r.x, r.y + 29);
         w4.pixel(r.x + 29, r.y + 29);
 
-        if (d.h) {
+        if (!d.h) {
             w4.color(0x13);
-            w4.text("_H_", r.x + 4, r.y - 10);
+            w4.text(" R ", r.x + 4, r.y - 10);
         }
 
         // Dots of the die
-        w4.color(0x34);
+        w4.color(if (!d.h) 0x12 else 0x34);
 
         switch (d.n) {
             1 => {
@@ -253,13 +256,12 @@ const Die = struct {
             else => {},
         }
 
-        w4.color(0x12);
+        w4.color(if (!d.h) 2 else 3);
         any(r.x + 11, r.y + 32, .{d.n});
     }
 };
 
 const Rect = struct {
-    c: u16 = 0,
     x: i32,
     y: i32,
     width: u32,
@@ -279,7 +281,6 @@ const Rect = struct {
     }
 
     fn draw(self: Rect) void {
-        w4.color(self.c);
         w4.rect(self.x, self.y, self.width, self.height);
     }
 };
@@ -332,7 +333,7 @@ fn sany(x: i32, y: i32, args: anytype) void {
 }
 
 fn rect(x: i32, y: i32, width: u32, height: u32) Rect {
-    return .{ .c = 0x32, .x = x, .y = y, .width = width, .height = height };
+    return .{ .x = x, .y = y, .width = width, .height = height };
 }
 
 fn die(n: u3, x: i32, y: i32, width: u32, height: u32) Die {
