@@ -1,0 +1,11 @@
+.{
+    .name = "w4-10k",
+    .version = "0.0.0",
+    .paths = .{""},
+    .dependencies = .{
+        .w4 = .{
+            .url = "https://github.com/peterhellberg/w4/archive/refs/tags/v0.0.4.tar.gz",
+            .hash = "122002b5d1203bb841a331176998a8d7a632547476f380a3f9d429f31d39896a28db",
+        },
+    },
+}
