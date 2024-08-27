@@ -197,7 +197,10 @@ const Die = struct {
     fn draw(d: *Die) void {
         const dot = w4.circle;
         const s = 4;
-        const r = d.r;
+
+        var r = d.r;
+
+        if (d.h) r.y -= 10;
 
         w4.color(if (!d.h) 0x43 else 0x32);
 
